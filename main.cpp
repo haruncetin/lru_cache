@@ -36,11 +36,42 @@ public:
     }
 
     void set(int key, int val) {
-
+        if(mp.size()>0) {
+            if(mp[key]) {
+                if(mp[key]->next == nullptr) {
+                    tail = mp[key]->prev;
+                }
+                mp[key]->key = key;
+                mp[key]->value = val;
+                mp[key]->prev->next = mp[key]->next;                    
+                mp[key]->prev = nullptr;
+                mp[key]->next = head->next;
+                head = mp[key];
+            } else {
+                mp[key] = new Node(key, val);
+                mp[key]->prev = nullptr;
+                mp[key]->next = head;
+                head = mp[key];
+            }        
+            if(mp.size() >= cp) {
+                //mp.erase(tail->key);
+                mp[tail->key] = nullptr;
+                tail->prev->next = nullptr;
+                delete tail->prev->next;
+                tail = tail->prev;
+            }
+        } else {
+            head = tail = new Node(key, val);
+            head->next = tail;
+            head->prev = nullptr;
+            tail->prev = head;
+            tail->next = nullptr;
+            mp[key] = head;
+        }
     }
 
     int get(int key) {
-
+        return mp[key] ? mp[key]->value : -1;
     }
 };
 
