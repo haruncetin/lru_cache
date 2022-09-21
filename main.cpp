@@ -31,14 +31,7 @@ class Cache{
 class LRUCache : public Cache {
 private:
     int _probe(int key) {
-        try
-        {
-            return mp.at(key)->value;
-        }
-        catch(const std::exception&)
-        {
-            return -1;
-        }
+        return mp[key] != nullptr ? mp[key]->value : -1;
     }
 public:
     LRUCache(int capacity) {
