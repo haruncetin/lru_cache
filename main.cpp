@@ -29,21 +29,33 @@ class Cache{
 };
 
 class LRUCache : public Cache {
-
+private:
+    int _probe(int key) {
+        try
+        {
+            return mp.at(key)->value;
+        }
+        catch(const std::exception&)
+        {
+            return -1;
+        }
+    }
 public:
     LRUCache(int capacity) {
         this->cp = capacity;
     }
 
     void set(int key, int val) {
-        if(mp.size()>0) {
-            if(mp[key]) {
+        if(!mp.empty()) {
+            if(_probe(key)>=0) {
                 if(mp[key]->next == nullptr) {
                     tail = mp[key]->prev;
                 }
+                if(mp[key]->prev != nullptr) {
+                    mp[key]->prev->next = mp[key]->next;                    
+                }
                 mp[key]->key = key;
                 mp[key]->value = val;
-                mp[key]->prev->next = mp[key]->next;                    
                 mp[key]->prev = nullptr;
                 mp[key]->next = head->next;
                 head = mp[key];
@@ -71,7 +83,7 @@ public:
     }
 
     int get(int key) {
-        return mp[key] ? mp[key]->value : -1;
+        return _probe(key);
     }
 };
 
